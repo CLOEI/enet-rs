@@ -27,7 +27,7 @@ pub enum ChannelLimit {
 }
 
 impl ChannelLimit {
-    pub(in crate) fn to_enet_val(self) -> enet_sys::size_t {
+    pub(crate) fn to_enet_val(self) -> enet_sys::size_t {
         match self {
             ChannelLimit::Maximum => 0,
             ChannelLimit::Limited(l) => l,
@@ -45,7 +45,7 @@ impl ChannelLimit {
 }
 
 impl BandwidthLimit {
-    pub(in crate) fn to_enet_u32(self) -> u32 {
+    pub(crate) fn to_enet_u32(self) -> u32 {
         match self {
             BandwidthLimit::Unlimited => 0,
             BandwidthLimit::Limited(l) => l,
@@ -63,9 +63,10 @@ pub struct Host<T> {
     _keep_alive: Arc<EnetKeepAlive>,
     _peer_data: PhantomData<*const T>,
 }
+unsafe impl<T> Send for Host<T> {}
 
 impl<T> Host<T> {
-    pub(in crate) fn new(_keep_alive: Arc<EnetKeepAlive>, inner: *mut ENetHost) -> Host<T> {
+    pub(crate) fn new(_keep_alive: Arc<EnetKeepAlive>, inner: *mut ENetHost) -> Host<T> {
         assert!(!inner.is_null());
 
         Host {
